@@ -10369,7 +10369,7 @@ end
 v496:AddSlider({
 	Title = "Speed",
 	Min = 26,
-	Max = 300,
+	Max = 400,
 	Default = getgenv().WalkSpeedValue,
 	Callback = function(v1137)
 		getgenv().WalkSpeedValue = v1137
