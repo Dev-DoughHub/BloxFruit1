@@ -3736,6 +3736,12 @@ function CheckItemBPCRBPCR(v463)
         end
     end
 end
+if not game:IsLoaded() then
+    repeat task.wait() until game:IsLoaded()
+end
+
+if setfpscap then setfpscap(60) end
+
 local vu32 = loadstring(game:HttpGet("https://raw.githubusercontent.com/PlockScripts/Library-ui/refs/heads/main/redz-V5-remake/main.luau"))()
 local v466 = vu32:MakeWindow({
     Title = "Dough Hub [ Premium ]",
