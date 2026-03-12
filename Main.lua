@@ -3742,6 +3742,20 @@ end
 
 if setfpscap then setfpscap(60) end
 
+task.spawn(function()
+    while task.wait(3) do
+        pcall(function()
+            for _, v in ipairs(workspace:GetDescendants()) do
+                if v:IsA("ParticleEmitter")
+                or v:IsA("Trail")
+                or v:IsA("Beam") then
+                    v.Enabled = false
+                end
+            end
+        end)
+    end
+end)
+
 local vu32 = loadstring(game:HttpGet("https://raw.githubusercontent.com/PlockScripts/Library-ui/refs/heads/main/redz-V5-remake/main.luau"))()
 local v466 = vu32:MakeWindow({
     Title = "Dough Hub [ Premium ]",
