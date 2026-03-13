@@ -3225,21 +3225,38 @@ function CancelTween23()
     end
     NoClip = false
 end
-function KillMob(v373, v374)
-    pcall(function()
-        thismob = DetectMob2(v373)
-        if thismob:FindFirstChild("HumanoidRootPart") and thismob.Parent and thismob:FindFirstChild("Humanoid") and thismob.Humanoid.Health > 0 then
-            repeat
-                task.wait()
-                Buso()
-                EquipWeapon()
-                Tween23(thismob.HumanoidRootPart.CFrame * CFrame.new(0, 15, 0))
-                BringPos = thismob.HumanoidRootPart.CFrame
-                BringMob(v373)
-                NoClip = true
-            until not thismob.Parent or not thismob:FindFirstChild("Humanoid") or thismob:FindFirstChild("Humanoid").Health <= 0 or not thismob:FindFirstChild("HumanoidRootPart") or v374()
-            NoClip = false
-            CancelTween23()
+repeat
+    task.wait(0.1) -- Giãn cách thời gian để tránh quá tải CPU gây giật
+    
+    -- Các hàm bổ trợ
+    Buso() 
+    EquipWeapon()
+    
+    -- Kiểm tra khoảng cách để di chuyển mượt mà
+    if thismob:FindFirstChild("HumanoidRootPart") then
+        local targetPos = thismob.HumanoidRootPart.CFrame * CFrame.new(0, 15, 0)
+        local dist = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - targetPos.Position).Magnitude
+        
+        -- Chỉ gọi Tween khi thực sự cần thiết (cách mục tiêu trên 5 đơn vị)
+        if dist > 5 then
+            Tween23(targetPos)
+        end
+        
+        -- Gom quái
+        BringPos = thismob.HumanoidRootPart.CFrame
+        BringMob(v373)
+    end
+
+    NoClip = true -- Cho phép đi xuyên vật thể
+
+-- ĐÂY LÀ PHẦN QUAN TRỌNG ĐỂ ĐÓNG VÒNG LẶP
+until not thismob.Parent or 
+      not thismob:FindFirstChild("Humanoid") or 
+      thismob.Humanoid.Health <= 0 or 
+      not thismob:FindFirstChild("HumanoidRootPart") or 
+      v374() -- Điều kiện dừng bổ sung nếu có
+
+NoClip = false -- Tắt NoClip sau khi farm xong
         end
     end)
 end
