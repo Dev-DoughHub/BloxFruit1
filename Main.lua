@@ -3562,7 +3562,7 @@ function fastpos(v427)
 end
 function slowpos(v428)
     Distance = (v428.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-    Speed = 150
+    Speed = 100
     game:GetService("TweenService"):Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear), {CFrame = v428}):Play()
 end
 local _ = {}
