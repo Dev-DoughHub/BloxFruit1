@@ -10326,29 +10326,42 @@ v496:AddToggle({
 spawn(function()
     while task.wait() do
         pcall(function()
-            CheckQuest()
-            for _, v1167 in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                if _G.BringMonster and (StartBring and v1167.Name == MonFarm or v1167.Name == Mon and v1167:FindFirstChild("Humanoid") and v1167:FindFirstChild("HumanoidRootPart") and v1167.Humanoid.Health > 0 and (v1167.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 320) then
-                    if v1167.Name == "Factory Staff" then
-                        if (v1167.HumanoidRootPart.Position - PosMon.Position).Magnitude <= 250 then
-                            v1167.Head.CanCollide = false
+            if _G.BringMonster then
+                CheckQuest()
+                local mobCount = 6 -- Biến đếm số lượng quái
+                
+                for _, v1167 in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    -- Điều kiện: Đúng tên quái, còn sống, và chưa quá 6 con
+                    if (v1167.Name == MonFarm or v1167.Name == Mon) 
+                    and v1167:FindFirstChild("Humanoid") 
+                    and v1167.Humanoid.Health > 0 
+                    and v1167:FindFirstChild("HumanoidRootPart") then
+                        
+                        -- Tính khoảng cách từ quái đến điểm gom (PosMon)
+                        local distToPos = (v1167.HumanoidRootPart.Position - PosMon.Position).Magnitude
+                        
+                        if distToPos <= 320 and mobCount < 6 then
+                            mobCount = mobCount + 1 -- Tăng biến đếm
+                            
+                            -- Vô hiệu hóa va chạm hoàn toàn để chống giật
                             v1167.HumanoidRootPart.CanCollide = false
-                            v1167.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v1167.Head.CanCollide = false
+                            if v1167:FindFirstChild("UpperTorso") then v1167.UpperTorso.CanCollide = false end
+                            
+                            -- Chỉnh Size vừa đủ (10x10x10 là đủ để đánh không trượt)
+                            v1167.HumanoidRootPart.Size = Vector3.new(10, 10, 10)
+                            
+                            -- Ép quái về điểm gom
                             v1167.HumanoidRootPart.CFrame = PosMon
+                            
+                            -- Xóa Animator để quái đứng im, giảm lag server
                             if v1167.Humanoid:FindFirstChild("Animator") then
                                 v1167.Humanoid.Animator:Destroy()
                             end
-                            sethiddenproperty(game:GetService("Players").LocalPlayer, "SimulationRadius", math.huge)
+                            
+                            -- Network Ownership: Giúp quái không bị khựng khi di chuyển
+                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
                         end
-                    elseif (v1167.Name == MonFarm or v1167.Name == Mon) and (v1167.HumanoidRootPart.Position - PosMon.Position).Magnitude <= 320 then
-                        v1167.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                        v1167.HumanoidRootPart.CFrame = PosMon
-                        v1167.HumanoidRootPart.CanCollide = false
-                        v1167.Head.CanCollide = false
-                        if v1167.Humanoid:FindFirstChild("Animator") then
-                            v1167.Humanoid.Animator:Destroy()
-                        end
-                        sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
                     end
                 end
             end
