@@ -3555,10 +3555,37 @@ function TP13(v423)
 
     return v422
 end
-function fastpos(v427)
-    Distance = (v427.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-    Speed = 400
-    game:GetService("TweenService"):Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear), {CFrame = v427}):Play()
+local isMoving = false -- Biến kiểm tra trạng thái di chuyển
+
+function fastpos(target)
+    -- Nếu đang di chuyển thì thoát hàm, không chạy đè lên
+    if isMoving then return end 
+    
+    local Character = game.Players.LocalPlayer.Character
+    if not Character or not Character:FindFirstChild("HumanoidRootPart") then return end
+    
+    local rootPart = Character.HumanoidRootPart
+    local targetCFrame = (typeof(target) == "Instance") and target.CFrame or target
+    local distance = (targetCFrame.Position - rootPart.Position).Magnitude
+    
+    -- Nếu khoảng cách quá gần (dưới 5 units) thì không cần Tween nữa để tránh giật
+    if distance < 5 then return end
+
+    isMoving = true
+    local speed = 350 -- Hạ xuống 350 để mượt hơn trên Mobile
+    
+    local tween = game:GetService("TweenService"):Create(
+        rootPart, 
+        TweenInfo.new(distance / speed, Enum.EasingStyle.Linear), 
+        {CFrame = targetCFrame}
+    )
+    
+    tween:Play()
+    
+    -- Khi chạy xong Tween thì mới cho phép chạy tiếp
+    tween.Completed:Connect(function()
+        isMoving = false
+    end)
 end
 function slowpos(v428)
     Distance = (v428.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
